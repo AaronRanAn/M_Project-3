@@ -1,0 +1,83 @@
+---
+title: "Mini Project 3 - Forecast"
+author: "Aaron"
+date: "July 20, 2016"
+output: 
+  html_document: 
+    highlight: haddock
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Using [this URL](https://www.otexts.org/fpp/7) AND the `AirPassengers` data. 
+
+```{r message=F, warning=F}
+
+library(ggplot2)
+library(ggfortify)
+library(dplyr)
+library(gridExtra)
+library(forecast)
+
+```
+
+
+### Synopsis
+
+The purpose of this analysis is to perform exponential smoothing on the AirPassengers dataset, ultilizing the `holt` function of R. Also this analysis aims to touch on the explanation of exponential smoothing and the Holt-Winters techinique. 
+
+### Methods
+
+Load the data set we need for this analysis: `AirPaseengers`. 
+
+```{r}
+
+data("AirPassengers")
+
+```
+
+**Exponential Smoothing**
+
+Forecasts produced using exponential smoothing methods are weighted averages of past observations, with the weights decaying exponentially as the observations get older. In other words, the more recent the observation the higher the associated weight. 
+
+**Holt-Winters**
+
+Holt and Winters extended Holt’s method to capture seasonality. The Holt-Winters seasonal method comprises the forecast equation and three smoothing equations: level, trend and seasonal. 
+
+We should prefer Holt-Winters over Exponential Smoothing when there is a strong seasonal component in the data. 
+
+This analysis is going to forecast **5** period out, from `1961-01` to `1961-05`. 
+
+### Analysis
+
+4. Your Analysis section must show the final forecast plot and offer an explanation (2 pts)
+
+```{r}
+AirPassengers %>% 
+    ses(alpha = 0.8, beta = 0.2, initial = "simple", exponential=TRUE, h=5) %>% 
+    autoplot() 
+```
+
+Zoom in on the prediction area. 
+
+```{r}
+
+AirPassengers %>% 
+    holt(alpha = 0.8, beta = 0.2, initial = "simple", exponential=TRUE, h=5) %>% 
+    autoplot() + 
+    coord_cartesian(xlim = c(1960,1962),ylim= c(200,700)) ## zoom in on prediction 
+
+```
+
+Explaination: The expected number of AirPassengers is likely to fluctuate between 250 - 550, with 95% confidence. It will likely to stablize around 400.  
+
+### Conclusion
+
+In this analysis, we were trying to use the exponential smoothing to predict the number of AirPassengers for the 5 months of 1961-01 to 1961-05. The conclusion is that in that 5 months, there will be about 350 - 425 passengers. 
+
+
+
+
